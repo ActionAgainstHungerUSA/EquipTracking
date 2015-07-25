@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
@@ -36,6 +39,8 @@ public class SearchActivity extends Activity  {
     private static final String ACCESS_SECRET_NAME = "ACCESS_SECRET";
 
     DropboxAPI<AndroidAuthSession> mApi;
+    private Button logoutButton;
+    private TextView notConnectedText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +50,28 @@ public class SearchActivity extends Activity  {
         mApi = new DropboxAPI<AndroidAuthSession>(session);
         setContentView(R.layout.activity_search);
 
-        mApi.getSession().startOAuth2Authentication(SearchActivity.this);
+        logoutButton = (Button)findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                logOut();
+            }
+        });
+        logoutButton.setVisibility(isLoggedIn() ? View.VISIBLE : View.GONE);
+
+        notConnectedText = (TextView)findViewById(R.id.not_connected_text);
+        notConnectedText.setVisibility(!isLoggedIn() ? View.VISIBLE : View.GONE);
+
+        if (!isLoggedIn())
+            mApi.getSession().startOAuth2Authentication(SearchActivity.this);
+        else
+            loadAuth(session);
     }
 
+    private boolean isLoggedIn() {
+        return !getSharedPreferences(ACCOUNT_PREFS_NAME, 0).getString(ACCESS_SECRET_NAME, "").isEmpty();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         AndroidAuthSession session = mApi.getSession();
@@ -56,6 +80,8 @@ public class SearchActivity extends Activity  {
             try {
                 session.finishAuthentication();
                 storeAuth(session);
+                logoutButton.setVisibility(View.VISIBLE);
+                notConnectedText.setVisibility(View.GONE);
             } catch (IllegalStateException e) {
                 showToast("Couldn't authenticate with Dropbox:" + e.getLocalizedMessage());
                 Log.i(TAG, "Error authenticating", e);
@@ -108,6 +134,16 @@ public class SearchActivity extends Activity  {
             // If the key is set to "oauth2:", then we can assume the token is for OAuth 2.
             session.setOAuth2AccessToken(secret);
         }
+    }
+
+    private void logOut() {
+        mApi.getSession().unlink();
+        SharedPreferences prefs = getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.clear();
+        edit.commit();
+        logoutButton.setVisibility(View.GONE);
+        notConnectedText.setVisibility(View.VISIBLE);
     }
 }
 
