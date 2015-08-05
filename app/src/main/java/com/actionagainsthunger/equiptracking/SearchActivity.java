@@ -13,34 +13,53 @@ import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.session.AppKeyPair;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 
 public class SearchActivity extends Activity  {
 
-    private static final String TAG = "EquipTracking";
-
-    ///////////////////////////////////////////////////////////////////////////
-    //                      Your app-specific settings.                      //
-    ///////////////////////////////////////////////////////////////////////////
-
-    // Replace this with your app key and secret assigned by Dropbox.
-    // Note that this is a really insecure way to do this, and you shouldn't
-    // ship code which contains your key & secret in such an obvious way.
-    // Obfuscation is good.
-    private static final String APP_KEY = "APP_KEY";
-    private static final String APP_SECRET = "APP_SECRET";
-
-    ///////////////////////////////////////////////////////////////////////////
-    //                      End app-specific settings.                       //
-    ///////////////////////////////////////////////////////////////////////////
+    private final String TAG = "EquipTracking";
+    private final String APP_KEY;
+    private final String APP_SECRET;
 
     // You don't need to change these, leave them alone.
-    private static final String ACCOUNT_PREFS_NAME = "prefs";
-    private static final String ACCESS_KEY_NAME = "ACCESS_KEY";
-    private static final String ACCESS_SECRET_NAME = "ACCESS_SECRET";
+    private final String ACCOUNT_PREFS_NAME = "prefs";
+    private final String ACCESS_KEY_NAME = "ACCESS_KEY";
+    private final String ACCESS_SECRET_NAME = "ACCESS_SECRET";
 
-    DropboxAPI<AndroidAuthSession> mApi;
+    private DropboxAPI<AndroidAuthSession> mApi;
+
     private Button logoutButton;
     private TextView notConnectedText;
+
+    public SearchActivity(){
+        Properties prop = new Properties();
+        InputStream input = null;
+        String appKey = "";
+        String appSecret = "";
+
+        try {
+            input = new FileInputStream("config.properties");
+            prop.load(input);
+            appKey = prop.getProperty("appkey");
+            appSecret = prop.getProperty("appsecret");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        APP_KEY = appKey;
+        APP_SECRET = appSecret;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,11 +129,11 @@ public class SearchActivity extends Activity  {
     private void storeAuth(AndroidAuthSession session) {
         String oauth2AccessToken = session.getOAuth2AccessToken();
         if (oauth2AccessToken != null) {
-            SharedPreferences prefs = getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putString(ACCESS_KEY_NAME, "oauth2:");
-            edit.putString(ACCESS_SECRET_NAME, oauth2AccessToken);
-            edit.commit();
+            SharedPreferences sharedPreferences = getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
+            SharedPreferences.Editor sharedPreferencesEdit = sharedPreferences.edit();
+            sharedPreferencesEdit.putString(ACCESS_KEY_NAME, "oauth2:");
+            sharedPreferencesEdit.putString(ACCESS_SECRET_NAME, oauth2AccessToken);
+            sharedPreferencesEdit.commit();
             return;
         }
     }
@@ -125,9 +144,9 @@ public class SearchActivity extends Activity  {
      * time (which is not to be done, ever).
      */
     private void loadAuth(AndroidAuthSession session) {
-        SharedPreferences prefs = getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
-        String key = prefs.getString(ACCESS_KEY_NAME, null);
-        String secret = prefs.getString(ACCESS_SECRET_NAME, null);
+        SharedPreferences sharedPreferences = getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
+        String key = sharedPreferences.getString(ACCESS_KEY_NAME, null);
+        String secret = sharedPreferences.getString(ACCESS_SECRET_NAME, null);
         if (key == null || secret == null || key.length() == 0 || secret.length() == 0) return;
 
         if (key.equals("oauth2:")) {
@@ -138,10 +157,10 @@ public class SearchActivity extends Activity  {
 
     private void logOut() {
         mApi.getSession().unlink();
-        SharedPreferences prefs = getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
-        SharedPreferences.Editor edit = prefs.edit();
-        edit.clear();
-        edit.commit();
+        SharedPreferences sharedPreferences = getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
+        SharedPreferences.Editor sharedPreferencesEdit = sharedPreferences.edit();
+        sharedPreferencesEdit.clear();
+        sharedPreferencesEdit.commit();
         logoutButton.setVisibility(View.GONE);
         notConnectedText.setVisibility(View.VISIBLE);
     }
