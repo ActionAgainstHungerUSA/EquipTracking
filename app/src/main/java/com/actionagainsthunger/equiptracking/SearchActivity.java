@@ -9,9 +9,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionagainsthunger.equiptracking.infrastructure.DatabaseHelper;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.session.AppKeyPair;
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,7 +21,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 
-public class SearchActivity extends Activity  {
+public class SearchActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 
     private final String TAG = "EquipTracking";
     private final String APP_KEY;

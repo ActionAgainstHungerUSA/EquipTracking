@@ -1,0 +1,188 @@
+# --table-start--
+dataClass=com.actionagainsthunger.equiptracking.domain.administration.Organization
+tableName=organization
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.actionagainsthunger.equiptracking.domain.administration.Purchase
+tableName=purchase
+# --table-fields-start--
+# --field-start--
+fieldName=equipment
+canBeNull=false
+foreign=true
+# --field-end--
+# --field-start--
+fieldName=purchasePrice
+# --field-end--
+# --field-start--
+fieldName=currency
+# --field-end--
+# --field-start--
+fieldName=purchaseDate
+# --field-end--
+# --field-start--
+fieldName=supplier
+canBeNull=false
+foreign=true
+# --field-end--
+# --field-start--
+fieldName=status
+# --field-end--
+# --field-start--
+fieldName=property
+canBeNull=false
+foreign=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.actionagainsthunger.equiptracking.domain.administration.Supplier
+tableName=supplier
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.actionagainsthunger.equiptracking.domain.Brand
+tableName=brand
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.actionagainsthunger.equiptracking.domain.Equipment
+tableName=equipment
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --field-start--
+fieldName=reference
+# --field-end--
+# --field-start--
+fieldName=designation
+# --field-end--
+# --field-start--
+fieldName=family
+columnName=family_id
+canBeNull=false
+foreign=true
+# --field-end--
+# --field-start--
+fieldName=model
+columnName=model_id
+canBeNull=false
+foreign=true
+# --field-end--
+# --field-start--
+fieldName=serialNumber
+# --field-end--
+# --field-start--
+fieldName=purchases
+foreignCollection=true
+# --field-end--
+# --field-start--
+fieldName=location
+columnName=base_id
+canBeNull=false
+foreign=true
+# --field-end--
+# --field-start--
+fieldName=condition
+# --field-end--
+# --field-start--
+fieldName=status
+# --field-end--
+# --field-start--
+fieldName=firstContractAllocation
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.actionagainsthunger.equiptracking.domain.EquipmentType
+tableName=equipmenttype
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.actionagainsthunger.equiptracking.domain.Family
+tableName=family
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --field-start--
+fieldName=type
+canBeNull=false
+foreign=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.actionagainsthunger.equiptracking.domain.location.Base
+tableName=base
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --field-start--
+fieldName=country
+canBeNull=false
+foreign=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.actionagainsthunger.equiptracking.domain.location.Country
+tableName=country
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.actionagainsthunger.equiptracking.domain.Model
+tableName=model
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --field-start--
+fieldName=brand
+canBeNull=false
+foreign=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
